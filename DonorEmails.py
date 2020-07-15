@@ -4,14 +4,14 @@ import xlrd
 import smtplib
 
 # email login info
-your_email = 'random email'
-temp_pwd = 'random password'
+your_email = 'savmaplz@pseudo.org'
 
 # open the excel file
-excel_loc = "location of excel"
+excel_loc = "/Users/svsriya/Documents/PythonPrograms/EmailProgram/Practice.xlsx"
 
 class Person:
 
+	numEmails = 0
 	# this makes it easier to handle people's names who appear multiple times on the excel
 	def __init__( self, email, causes ):
 		self.email = email
@@ -58,10 +58,40 @@ def create_donor_list( file_loc ):
 
 def custom_ty_note( name, causes_list ):
 
-	thankyou_note = "Dear " + name + ", \n\n" + "\tThank you for your donation. You have donated to the following cause(s): \n" 
+	thankyou_note = """O:m Asmad Gurubhyo:namaha!                                                                      Sri:mathe:Ra:ma:nuja:yanamaha!
 
-	for c in causes_list:
-		thankyou_note += "\n\t" + c
+Jai Srimannarayana!
+
+Dear Sriman / Smt. """ + name + """,
+
+\tThank you for your generous donations and support in our service activities! His Holiness Sri Chinna Jeeyar Swamiji offers His Mangala:sa:sanam to you and your family. You have donated to the cause(s) below:\n"""
+
+	for i in range( len(causes_list)):
+		thankyou_note += "\n\t\t" + causes_list[i]
+
+	thankyou_note += """\n\n\tYour donations are being put to good use. These activities have been successfully growing with the support of philanthropists like you. Construction of the current mega project, the Statue of Equality, has been progressing very well. His Holiness invites you and your family to participate in the upcoming inauguration function, tentatively in February 2019.
+
+	Want to know how your contributions made a difference in the community?
+	Here are the annual highlights of 2017 on all our activities:
+	\thttps://chinnajeeyar.guru/chinnajeeyar/wp-content/uploads/2018/03/2017-Highlights.pdf
+	
+	We would love to hear back from you! Please provide us with your valuable feedback here:
+	\thttps://docs.google.com/forms/d/e/1FAIpQLScX0RQKV9JsxXWBcPuq0XXdIlVi5rMon2k213XrRj8QSTNljw/viewform?usp=sf_link
+
+	Please contact me for any questions.
+
+	With Gratitude,
+	In service of His Holiness' Devotees
+	Padma Vudata, DRO (Donors Relation Officer)
+	
+	Contact info:
+	Email: DRO@chinnajeeyar.guru
+	Phone Number: 203-564-0279
+	
+	https://www.statueofequality.org                                                                                                         
+	https://chinnajeeyar.guru
+	
+	Jai Srimannarayana!"""
 
 	return thankyou_note
 
@@ -72,15 +102,15 @@ def send_email( to_email, from_email, password, body ):
 	msg = MIMEMultipart()
 
 	# parameters of message
-	msg['From'] = from_email
+	msg['From'] = "His Holiness Chinna Jeeyar - Donor Relations Officer <dro@chinnajeeyar.guru>"
 	msg['To'] = to_email
-	msg['Subject'] = "Email Application"
+	msg['Subject'] = "Thank You for Your Support - Your Contributions are Valued "
 
-	# add in the message body
-	msg.attach( MIMEText( body, 'plain' ) )
+	# add in the html message body
+	msg.attach(MIMEText(body, 'plain'))
 
-	# server
-	mail = smtplib.SMTP( 'smtp.gmail.com: 587' )
+	# server for whatever email platform 
+	mail = smtplib.SMTP( 'smtp.gmail.com:587' )
 	mail.ehlo()
 	mail.starttls()
 
@@ -88,7 +118,7 @@ def send_email( to_email, from_email, password, body ):
 	mail.login( from_email, password )
 
 	# send message via server
-	mail.sendmail( msg['From'], msg['To'], msg.as_string() )
+	mail.sendmail( from_email, msg['To'], msg.as_string() )
 
 	mail.close()
 
@@ -107,10 +137,16 @@ def main():
 		causes_list = data[key].causes
 
 		email_body = custom_ty_note( name, causes_list )
-		print email_body + "\n"
+		# print email_body + "\n"
 		print send_email( email, your_email, temp_pwd, email_body )
-
+		######
+		Person.numEmails += 1
+		print "Number of emails sent: " + str(Person.numEmails)
+		if Person.numEmails == 3:
+			print "\nToday's limit has been reached. Take some rest mom!!!\n"
+			break
+		######
 
 if __name__ == '__main__':
-   main()		
+	 main()		
 
